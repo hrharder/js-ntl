@@ -143,10 +143,16 @@ function submitOrder(){
 		alice.getPublicKey(),
 		"not used in testing");
 
-	newOrder = testntl.makeOrder(order.getOrderData(), order.getOrderMetadata(), alice.getPublicKey());
+	newOrder = testntl.makeOrder(
+		order.getOrderData(),
+		order.getOrderMetadata(),
+		alice.getPublicKey());
 
-	signedOrder = testntl.signOrder(newOrder, alice.getPrivateKey());
+	signedOrder = testntl.signOrder(
+		newOrder,
+		alice.getPrivateKey());
 
 	orderID = testntl.sendOrder(signedOrder);
+	
 	window.alert(orderID);
 }
