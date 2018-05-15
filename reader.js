@@ -1,5 +1,5 @@
 
-var wsUri = "wss://test2.bigchaindb.com:443/api/v1/streams/valid_transactions";
+var wsUri = "wss://test.bigchaindb.com:443/api/v1/streams/valid_transactions";
 var output;
 var alertbox;
 function init()
