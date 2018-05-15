@@ -1,6 +1,6 @@
 /*
 	NTL Tester Program (v0.1.3c)
-	NetworkTransportLayerJS 
+	NetworkTransportLayerJS
 
 	@version-date: 18 April 2018
 	@author: Henry R Harder
@@ -14,8 +14,8 @@
 		'app_key' fields with actual BigchainDB credentials if you wish
 		to use the testnet.
 
-		This script is designed to be run in a browser where the 
-		bigchain-db-js driver is already loaded. 
+		This script is designed to be run in a browser where the
+		bigchain-db-js driver is already loaded.
 */
 
 class NetworkTransportLayer{
@@ -26,10 +26,10 @@ class NetworkTransportLayer{
 	cluster.
 	*/
 
-	constructor(id, key, rootUrl){
+	constructor(rootUrl){
 		this.connection = new BigchainDB.Connection(rootUrl, {
-			app_id : id,
-			app_key : key
+			app_id : 'fd3fc431',
+			app_key : '13a76a6f7cacf18f9b3d775cf179dcf6'
 		});
 	}
 
@@ -55,17 +55,14 @@ class NetworkTransportLayer{
 		return signedOrder.id;
 	}
 
-	cancelOrder(txid, publicKey, privateKey, signature){
-		dd
-	}
 }
 
 class KeyPairGenerator{
 	/*
 	This class creates a public/private key pair that can be
 	used for testing purposes, and provides methods to access
-	the public and private keys. Should not be used for real 
-	key generation, meerly for testing purposes. 
+	the public and private keys. Should not be used for real
+	key generation, meerly for testing purposes.
 	*/
 
 	constructor(){
@@ -84,7 +81,7 @@ class KeyPairGenerator{
 class OrderMaker{
 	/*
 	This class takes a list of uints, a list of hex
-	addresses, and a maker address, and provides 
+	addresses, and a maker address, and provides
 	methods for returning a formatted order and order
 	metadata ready for broadcast to BigchainDB
 	*/
@@ -93,20 +90,16 @@ class OrderMaker{
 		this.orderData = {
 			'order':{
 				"maker" : [],
-				"sig" : signature;
+				"sig" : signature,
 				"timestamp" : Math.floor(Date.now()/1000),
 				"fields" : {
 					"intList" : intList,
-					"addrList" : addrList
-				}
-			}
-		};
+					"addrList" : addrList }}};
 
 		this.orderMetaData = {
 			"filled" : false,
 			"valid" : true,
-			"updated" : Math.floor(Date.now()/1000)
-			};
+			"updated" : Math.floor(Date.now()/1000)};
 		}
 
 	getOrderData(){
@@ -119,14 +112,10 @@ class OrderMaker{
 }
 
 function submitOrder(){
-	testntl = new NetworkTransportLayer(
-	'fd3fc431',	// insert your credentials here to test
-	'13a76a6f7cacf18f9b3d775cf179dcf6', // insert your credentials here to test
-	'https://test2.bigchaindb.com/api/v1/',
-	 ); 
+	testntl = new NetworkTransportLayer('http://test.bigchaindb.com:9984/api/v1/');
 
-	var intList = [];
-	var addrList = [];
+ 	intList = [];
+	addrList = [];
 
 	intList.push(document.getElementById("uint1").value);
 	intList.push(document.getElementById("uint2").value);
@@ -136,17 +125,17 @@ function submitOrder(){
 	addrList.push(document.getElementById("addr2").value);
 	addrList.push(document.getElementById("addr3").value);
 
-	alice = new KeyPairGenerator();
+	alice = new BigchainDB.Ed25519Keypair();
 	order = new OrderMaker(
 		intList,
 		addrList,
-		alice.getPublicKey(),
+		alice.publicKey,
 		"not used in testing");
 
-	newOrder = testntl.makeOrder(order.getOrderData(), order.getOrderMetadata(), alice.getPublicKey());
+	newOrder = testntl.makeOrder(order.getOrderData(), order.getOrderMetadata(), alice.publicKey);
 
-	signedOrder = testntl.signOrder(newOrder, alice.getPrivateKey());
+	signedOrder = testntl.signOrder(newOrder, alice.privateKey);
 
 	orderID = testntl.sendOrder(signedOrder);
-	window.alert(orderID);
+	console.log(orderID);
 }
