@@ -70,8 +70,8 @@ function writeOrder(intList, addrList, maker, signature){
 function submitOrder(){
   const ntl = openConnection(
     'https://test.bigchaindb.com/api/v1/',
-    'fd3fc431',
-    '13a76a6f7cacf18f9b3d775cf179dcf6');
+    '', # testnet app-id goes here
+    ''); # testnet app-key goes here
 
   let intList = [];
   let addrList = [];
